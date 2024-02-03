@@ -29,7 +29,7 @@ export default class Widget {
 
     Widget.panel = this.panel = parseDom(`<div class='-sbd-panel'>
             <div class='-sbd-header'>
-                <div class='-sbd-title'>Inbox</div>
+                <div class='-sbd-title'>Chat</div>
                 <div class='-sbd-tabs'>
                     <div class='-sbd-tab-item' data-status='${SendBirdDesk.Ticket.Status.OPEN}'>OPEN</div>
                     <div class='-sbd-tab-item' data-status='${SendBirdDesk.Ticket.Status.CLOSED}'>CLOSED</div>

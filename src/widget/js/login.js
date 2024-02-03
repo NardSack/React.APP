@@ -4,7 +4,7 @@ import { parseDom } from './domparser.js';
 import Broadcast from './broadcast.js';
 import Widget from './widget.js';
 
-const ADVANCED_OPTION = true;
+const ADVANCED_OPTION = false;
 
 const LOGIN_CACHE_KEY_APP_ID = 'sb-desk-appId';
 const LOGIN_CACHE_KEY_USER_ID = 'sb-desk-userId';
@@ -15,8 +15,22 @@ const LOGIN_CACHE_KEY_ADVANCED_API_HOST = 'sb-desk-advanced-apihost';
 const LOGIN_CACHE_KEY_ADVANCED_DESK_API_HOST = 'sb-desk-advanced-deskApihost';
 
 export default class Login {
+
+  show() {
+    document.body.appendChild(this.element);
+    this.element.addClass('shown');
+  }
+  hide() {
+    this.element.removeClass('shown');
+    setTimeout(() => {
+      document.body.removeChild(this.element);
+    }, 2000);
+  }
+
+
+
   constructor() {
-    const caching = !!window.localStorage;
+    const caching = !!window.localStorage;// check
     const cachedUser = {
       appId: '',
       userId: '',
@@ -42,7 +56,7 @@ export default class Login {
     this.element = parseDom(`<div class='-sbd-login-background'>
           <div class='-sbd-login'>
             <div class='logo'></div>
-            <div class='title'><span class='bold'>Desk Widget</span> Login</div>
+            <div class='title'><span class='bold'>tedting</span> Login</div>
             <div class='panel'>
               <div class='form form-login'>
                 <span class='input-label'>App ID</span>
@@ -137,16 +151,8 @@ export default class Login {
     Broadcast.subscribe('signout', () => this.show());
     this.show();
   }
-  show() {
-    document.body.appendChild(this.element);
-    this.element.addClass('shown');
-  }
-  hide() {
-    this.element.removeClass('shown');
-    setTimeout(() => {
-      document.body.removeChild(this.element);
-    }, 2000);
-  }
+
+
 }
 window.onload = () => {
   new Login();
