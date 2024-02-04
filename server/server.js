@@ -53,6 +53,7 @@ app.post("/new_ticket_webhook", async (req, res) => {
        const channelUrl = data.channelUrl; // Extract channel URL from data
        const botId = "1"; // Specify bot ID
          // Invite bot to the channel
+         console.log(channelUrl, botId)
         const sendInvite = await inviteBotToChannel(channelUrl, botId);
  }
  });
