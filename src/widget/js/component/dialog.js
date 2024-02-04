@@ -11,6 +11,8 @@ const DEFAULT_AGENT = 'Agent';
 const DEFAULT_PLACEHOLDER = 'Write a message...';
 const DEFAULT_PLACEHOLDER_DISABLED = '';
 
+const dialogflowendpoint = "http://localhost:5500" ;
+
 export default class Dialog {
   constructor(ticket) {
     this.ticket = ticket;
@@ -97,7 +99,8 @@ export default class Dialog {
             .sendUserMessage(message)
             // .onPending((message) => {
             // })
-            .onSucceeded((message) => {
+            .onSucceeded((message) => {//user messsage sent success
+              console.log(message)
               if (SendBirdDesk.Message.UrlRegExp.test(message.message)) {
                 message.url = SendBirdDesk.Message.UrlRegExp.exec(message.message)[0];
                 SendBirdDesk.Ticket.getUrlPreview(message.url, (res, err) => {
@@ -123,9 +126,32 @@ export default class Dialog {
                   );
                 });
               }
+              console.log(message)
+              console.log(`messsage is ${message.message}`)
+              console.log(message.channelUrl)
+              if (!message.message.toLowerCase().includes("human")&& !message.message.toLowerCase().includes("human"))
+              {
+                  var postdata = 
+                  {
+                      "message" :{"text": message.message},
+                      "bot" : {"bot_userid" : "1"},
+                      "channel" : {"channel_url" :  message.channelUrl}
+                  }
+                  fetch (dialogflowendpoint+"/callback",
+                  {
+                    method:"POST",
+                    headers : {
+                      'Content-Type': 'application/json',
+                    },
+                    body : JSON.stringify(postdata)
+                  }).catch(error => {
+                    console.log('Error sending POST request:', error);
+                  });
+                }
               this.appendMessage(message);
               this.scrollToBottom();
             })
+          
             .onFailed((error, message) => {
               this.ticket.status = SendBirdDesk.Ticket.Status.INITIALIZED;
             });
