@@ -18,7 +18,7 @@ app.use(express.json());
 
 //sendbird info
 var APP_ID = 'AD791A35-62CA-4E37-A490-79C7368C5D77';
-var BOT_ID = 'bot1';
+var BOT_ID = '1';
 const TOKEN = 'eb55f1c4e4118a422644b97f0e62ba1f39014649';
 const ENTRYPOINT = 'https://api-AD791A35-62CA-4E37-A490-79C7368C5D77.sendbird.com/v3/bots';
 
@@ -145,18 +145,19 @@ async function updateTicketStatus (channelUrl) {
          */
         const msgText = message.text;
         console.log('Sending to DialogFlow...');
+        console.log(`user :${botId} channelname:${channelUrl}`)
         /**
          * Send user message from Sendbird to dialogflow
          */
         let botrespond = await sendToDialogFlow(msgText, async (response) => {
             console.log('Response from DF: ' + response);
             /**
-             * Lastly, send Dialogflow response to chat using our Bot
-             */
+        //      * Lastly, send Dialogflow response to chat using our Bot
+        //      */
             await fromDialogFlowSendMessageToChannel(response, channelUrl, botId);
-            /**
-             * Respond HTTP OK (200)
-             */
+        //     /**
+        //      * Respond HTTP OK (200)
+        //      */
             res.status(200).json({
                 message: 'Response from DialogFlow: ' + response
             });        
@@ -184,6 +185,7 @@ async function fromDialogFlowSendMessageToChannel(queryText, channelUrl, botId) 
             'Content-Type': 'application/json'
         },
     });
+
 }
 
 function sendToDialogFlow(message, callback) {

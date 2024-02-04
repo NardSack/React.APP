@@ -110,6 +110,7 @@ export default class Widget {
       SendBirdDesk.Ticket.create(tempTicketTitle, user.nickname,"","","LOW",[],"",(ticket, err) => {
         if (err) throw err;
         this.spinner.detach();
+        console.log(ticket)
         this.startNewDialog(ticket);
       });
     });
