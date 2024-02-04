@@ -1,7 +1,17 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const port = 5000;
+const axios = require('axios');
+const bodyParser = require("body-parser");
+const port = process.env.PORT || 5500;
+
+
+
+const SendBird = require('sendbird');
+var sb = new SendBird({appId: APP_ID});
+
+const dialogflow = require('@google-cloud/dialogflow').v2beta1;
+
 
 app.use(cors());
 app.use(express.json());
@@ -30,7 +40,7 @@ app.get("/message", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on ${port}`);
 });
 
 app.post("/new_ticket_webhook", async (req, res) => {
@@ -161,3 +171,77 @@ async function updateTicketStatus (channelUrl) {
         });
     }
 });
+
+
+async function fromDialogFlowSendMessageToChannel(queryText, channelUrl, botId) {
+    const params = {
+        message: queryText,
+        channel_url: channelUrl
+    }
+    await axios.post(ENTRYPOINT + '/' + botId + '/send', params, {
+        headers: { 
+            "Api-Token": TOKEN,
+            'Content-Type': 'application/json'
+        },
+    });
+}
+
+function sendToDialogFlow(message, callback) {
+// function sendToDialogFlow(message) {
+    try {
+        const queries = [
+            message
+        ];
+        const response = executeQueries(DIALOGFLOW_PROJECT_ID, GOOGLE_SESSION_ID, queries, DIALOGFLOW_LANG, callback);    
+        return response;
+    } catch (error) {
+        console.log(`${error}`)
+    }
+}
+
+async function executeQueries(projectId, sessionId, queries, languageCode, callback) {
+    let context;
+    let intentResponse;
+    for (const query of queries) {
+        try {
+            intentResponse = await detectIntent(
+                projectId,
+                sessionId,
+                query,
+                context,
+                languageCode
+            );
+            console.log(intentResponse.queryResult);
+            const responseText = intentResponse.queryResult.fulfillmentText;
+            context = intentResponse.queryResult.outputContexts;
+            callback(responseText);
+        } catch (error) {
+            console.log(error);
+            callback('Error from DialogFlow: ' + error);
+        }
+    }
+}
+
+async function detectIntent(projectId, sessionId, query, contexts, languageCode) {
+    const sessionClient = new dialogflow.SessionsClient();
+    const sessionPath = sessionClient.projectAgentSessionPath(
+        projectId,
+        sessionId
+    );
+    const request = {
+        session: sessionPath,
+        queryInput: {
+        text: {
+            text: query,
+            languageCode: languageCode,
+        },
+        },
+    };
+    if (contexts && contexts.length > 0) {
+        request.queryParams = {
+        contexts: contexts,
+        };
+    }
+    const responses = await sessionClient.detectIntent(request);
+    return responses[0];
+}

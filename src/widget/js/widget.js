@@ -107,7 +107,7 @@ export default class Widget {
       const ticketNum = ('000' + (new Date().getTime() % 1000)).slice(-3);
       const tempTicketTitle = `Issue #${ticketNum}`;
       this.spinner.attachTo(this.ticketList);
-      SendBirdDesk.Ticket.create(tempTicketTitle, user.nickname, (ticket, err) => {
+      SendBirdDesk.Ticket.create(tempTicketTitle, user.nickname,"","","LOW",[],"",(ticket, err) => {
         if (err) throw err;
         this.spinner.detach();
         this.startNewDialog(ticket);
