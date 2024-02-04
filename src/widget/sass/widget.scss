@@ -22,7 +22,7 @@ $ic-file: 'ic-file.png';
 $ic-my-file: 'ic-my-file.png';
 $ic-notification-close: 'ic-notification-close.png';
 
-$login-logo: 'login-logo.png';
+$login-logo: 'ocbclogo.png';
 $guide-balloon: 'guide-balloon.png';
 
 @keyframes spinnerAnimation {
@@ -1100,12 +1100,12 @@ body {
             height: 36px;
             line-height: 36px;
             color: #fff;
-            background-color: #1fcc94;
+            background-color: #e11a27;
             text-align: center;
             cursor: pointer;
             @include border-radius(2px);
             @include hover {
-              background: #0fbc84;
+              background: #e11a27;
             }
           }
         }
