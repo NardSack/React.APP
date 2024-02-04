@@ -11,7 +11,10 @@ const DEFAULT_AGENT = 'Agent';
 const DEFAULT_PLACEHOLDER = 'Write a message...';
 const DEFAULT_PLACEHOLDER_DISABLED = '';
 
+const enterypoint = `https://api-AD791A35-62CA-4E37-A490-79C7368C5D77.sendbird.com/v3/bots`
 const dialogflowendpoint = "http://localhost:5500" ;
+const humanhandoffendpoint = "https://raynard-testing.glitch.me";
+const TOKEN = 'eb55f1c4e4118a422644b97f0e62ba1f39014649';
 var dialogon =true;
 
 export default class Dialog {
@@ -130,12 +133,12 @@ export default class Dialog {
               console.log(message)
               console.log(`messsage is ${message.message}`)
               console.log(message.channelUrl)
-              if (!message.message.toLowerCase().includes("human")&& !message.message.toLowerCase().includes("agent") && dialogon)
+              if (!message.message.toLowerCase().includes("human")&& !message.message.toLowerCase().includes("agent")||message.message.toLowerCase().includes("staff") && dialogon)
               {
                   var postdata = 
                   {
                       "message" :{"text": message.message},
-                      "bot" : {"bot_userid" : "1"},
+                      "bot" : {"bot_userid" : "bot1"},
                       "channel" : {"channel_url" :  message.channelUrl}
                   }
                   fetch (dialogflowendpoint+"/callback",
@@ -149,9 +152,37 @@ export default class Dialog {
                     console.log('Error sending POST request:', error);
                   });
                 }
-                if (message.message.toLowerCase().includes("human")||message.message.toLowerCase().includes("agent"))
+                if (message.message.toLowerCase().includes("human")||message.message.toLowerCase().includes("agent")||message.message.toLowerCase().includes("staff"))
                 {
                   dialogon = false;
+                  var parameters = {
+                    "message" : "Please wait as we connect to a staff",
+                    "channel_url" : message.channelUrl
+                  }
+                  fetch (enterypoint + "/bot1/send",
+                  {
+                    method:"POST",
+                    headers: { 
+                      "Api-Token": TOKEN,
+                      'Content-Type': 'application/json'
+                      },
+                      body : JSON.stringify(parameters)
+                  }).catch(error => {
+                    console.log('Error sending POST connect request:', error);
+                  });
+                  var handoffdata = {
+                    "channel_url" : message.channelUrl
+                  }
+                  fetch (humanhandoffendpoint+"/hand_off",{
+                    method:"POST",
+                    headers : {
+                      'Content-Type': 'application/json',
+                    },
+                    body : JSON.stringify(handoffdata)
+                  }).catch(error => {
+                    console.log('Error sending POST human request:', error);
+                  });
+
                 }
               this.appendMessage(message);
               this.scrollToBottom();

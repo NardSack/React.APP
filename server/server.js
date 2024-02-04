@@ -131,7 +131,7 @@ async function updateTicketStatus (channelUrl) {
   app.post('/callback', express.json(), async (req, res) => {
     const { message, bot, channel } = req.body;
     // let obj = JSON.parse(req.body);
-    console.log("message", message + " bot " + bot + " channel " + channel)
+    //console.log("message", message + " bot " + bot + " channel " + channel)
     console.log('Request ody', req.body);
     // console.log('1', req.body.bot.bot_userid);
 
