@@ -12,6 +12,7 @@ const DEFAULT_PLACEHOLDER = 'Write a message...';
 const DEFAULT_PLACEHOLDER_DISABLED = '';
 
 const dialogflowendpoint = "http://localhost:5500" ;
+var dialogon =true;
 
 export default class Dialog {
   constructor(ticket) {
@@ -129,7 +130,7 @@ export default class Dialog {
               console.log(message)
               console.log(`messsage is ${message.message}`)
               console.log(message.channelUrl)
-              if (!message.message.toLowerCase().includes("human")&& !message.message.toLowerCase().includes("human"))
+              if (!message.message.toLowerCase().includes("human")&& !message.message.toLowerCase().includes("agent") && dialogon)
               {
                   var postdata = 
                   {
@@ -147,6 +148,10 @@ export default class Dialog {
                   }).catch(error => {
                     console.log('Error sending POST request:', error);
                   });
+                }
+                if (message.message.toLowerCase().includes("human")||message.message.toLowerCase().includes("agent"))
+                {
+                  dialogon = false;
                 }
               this.appendMessage(message);
               this.scrollToBottom();
