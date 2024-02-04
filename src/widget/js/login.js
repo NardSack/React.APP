@@ -56,7 +56,7 @@ export default class Login {
     this.element = parseDom(`<div class='-sbd-login-background'>
           <div class='-sbd-login'>
             <div class='logo'></div>
-            <div class='title'><span class='bold'>tedting</span> Login</div>
+            <div class='title'><span class='bold'>OCBC Banking</span> Login</div>
             <div class='panel'>
               <div class='form form-login'>
                 <span class='input-label'>App ID</span>
